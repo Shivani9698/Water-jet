@@ -10,6 +10,9 @@ const int solenoidPin = 8;
 // Create a SoftwareSerial object for communication with the QR code scanner
 SoftwareSerial qrScanner(qrScannerRX, qrScannerTX);
 
+// State to track the door lock status
+bool isLocked = true;
+
 void setup() {
   // Start the hardware serial communication for debugging
   Serial.begin(115200);
@@ -37,9 +40,15 @@ void loop() {
     Serial.print("Scanned QR Code: ");
     Serial.println(qrCodeData);
 
-    // If a valid QR code is scanned, unlock the solenoid
+    // If a valid QR code is scanned, toggle the solenoid state
     if (isValidQRCode(qrCodeData)) {
-      unlockSolenoid();
+      if (isLocked) {
+        unlockSolenoid();
+      } else {
+        lockSolenoid();
+      }
+      // Toggle the lock state
+      isLocked = !isLocked;
     }
   }
 }
@@ -53,8 +62,13 @@ bool isValidQRCode(String qrCodeData) {
 // Function to unlock the solenoid
 void unlockSolenoid() {
   Serial.println("Welcome..I am your safe place");
-  digitalWrite(solenoidPin, HIGH); // Unlock the solenoid
-  delay(1000);                     // Keep the solenoid unlocked for 5 seconds (adjust as needed)
-  digitalWrite(solenoidPin, LOW);  // Lock the solenoid again
+  digitalWrite(solenoidPin, LOW); // Unlock the solenoid
+  Serial.println("Solenoid unlocked.");
+}
+
+// Function to lock the solenoid
+void lockSolenoid() {
+  Serial.println("Goodbye.. See you again");
+  digitalWrite(solenoidPin, HIGH); // Lock the solenoid
   Serial.println("Solenoid locked.");
 }
