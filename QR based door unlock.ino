@@ -24,7 +24,7 @@ void setup() {
   pinMode(solenoidPin, OUTPUT);
 
   // Ensure the solenoid is locked at startup
-  digitalWrite(solenoidPin, LOW);
+  digitalWrite(solenoidPin, HIGH);
 
   Serial.println("QR Code Scanner Ready. Scan a QR code.");
 }
@@ -40,23 +40,17 @@ void loop() {
     Serial.print("Scanned QR Code: ");
     Serial.println(qrCodeData);
 
-    // If a valid QR code is scanned, toggle the solenoid state
+    // If a valid QR code is scanned, unlock the solenoid
     if (isValidQRCode(qrCodeData)) {
-      if (isLocked) {
-        unlockSolenoid();
-      } else {
-        lockSolenoid();
-      }
-      // Toggle the lock state
-      isLocked = !isLocked;
+      unlockSolenoid();
     }
   }
 }
 
 // Function to check if the scanned QR code is valid
 bool isValidQRCode(String qrCodeData) {
-  // Check if the QR code data matches the valid code "815847"
-  return qrCodeData == "815847";
+  // Check if the QR code data matches the valid code "Rithick"
+  return qrCodeData == "Rithick";
 }
 
 // Function to unlock the solenoid
@@ -64,6 +58,10 @@ void unlockSolenoid() {
   Serial.println("Welcome..I am your safe place");
   digitalWrite(solenoidPin, LOW); // Unlock the solenoid
   Serial.println("Solenoid unlocked.");
+  
+  delay(2000); // Wait for 2 seconds
+  
+  lockSolenoid(); // Lock the solenoid after 2 seconds
 }
 
 // Function to lock the solenoid
